@@ -8,6 +8,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -24,23 +25,29 @@ public class JPAExample {
             e.printStackTrace();
         }
 
-        Klass classBp2 = new Klass("Budapest 2016-2");
+        Klass classBp2 = new Klass("Budapest 2016-2", CCLocation.BUDAPEST);
         Address address = new Address("Hungary", "1234", "Budapest", "Macskakő út 5.");
-        Student student = new Student("Ödön", "odon@tokodon.hu", birthDate1, address);
-        classBp2.addStudent(student);
+        Student studentWithAddress = new Student("Ödön",
+                "odon@tokodon.hu", birthDate1, Arrays.asList("1111111"), address);
+        classBp2.addStudent(studentWithAddress);
+        studentWithAddress.setKlass(classBp2);
 
         EntityTransaction transaction = em.getTransaction();
         transaction.begin();
+        em.persist(classBp2);
         em.persist(address);
-        em.persist(student);
+        em.persist(studentWithAddress);
         transaction.commit();
         System.out.println("Ödön saved.");
 
         Address address2 = new Address("Hungary", "6789", "Budapest", "Harap u. 3.");
-        Student student2 = new Student("Aladár", "ktyfl@gmail.com", birthDate2, address);
+        Student student2 = new Student("Aladár",
+                "ktyfl@gmail.com", birthDate2, Arrays.asList("2222222"), address);
         classBp2.addStudent(student2);
+        student2.setKlass(classBp2);
 
         transaction.begin();
+        em.persist(classBp2);
         em.persist(student2);
         em.persist(address2);
         transaction.commit();
